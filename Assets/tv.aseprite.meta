@@ -1,0 +1,49 @@
+fileFormatVersion: 2
+guid: c4fb26c4a34b27c42976fa051c470f7b
+ScriptedImporter:
+  internalIDToNameTable: []
+  externalObjects: {}
+  serializedVersion: 2
+  userData: 
+  assetBundleName: 
+  assetBundleVariant: 
+  script: {fileID: 11500000, guid: 267e295496b7a3f4fa27121905fc4233, type: 3}
+  textureSettings:
+    textureType: 8
+    pixelsPerUnit: 32
+    transparentMask: 0
+    transparentColor: {r: 1, g: 0, b: 1, a: 1}
+    meshType: 1
+    extrudeEdges: 1
+    spritePivot: {x: 0.5, y: 0.5}
+    generatePhysics: 1
+    wrapMode: 1
+    filterMode: 0
+    tileSize: {x: 32, y: 32}
+    tilePadding: {x: 0, y: 0}
+    tileOffset: {x: 0, y: 0}
+    flipTexture: 0
+  animationSettings:
+  - animationName: all
+    loopTime: 1
+    about: "Animation Type:\tForward\r\nAnimation:\tFrom: 0; To: 69"
+  - animationName: start
+    loopTime: 1
+    about: "Animation Type:\tForward\r\nAnimation:\tFrom: 46; To: 49"
+  - animationName: 1
+    loopTime: 1
+    about: "Animation Type:\tForward\r\nAnimation:\tFrom: 5; To: 14"
+  - animationName: xunhuan
+    loopTime: 1
+    about: "Animation Type:\tForward\r\nAnimation:\tFrom: 27; To: 33"
+  - animationName: end
+    loopTime: 1
+    about: "Animation Type:\tForward\r\nAnimation:\tFrom: 63; To: 69"
+  - animationName: 2
+    loopTime: 1
+    about: "Animation Type:\tForward\r\nAnimation:\tFrom: 26; To: 38"
+  - animationName: 3
+    loopTime: 1
+    about: "Animation Type:\tForward\r\nAnimation:\tFrom: 50; To: 62"
+  atlas: {instanceID: 0}
+  importType: 0
