@@ -92,17 +92,16 @@ namespace AsepriteImporter
 
                 EditorGUILayout.PropertyField(serializedObject.FindProperty(textureSettings + "flipTexture"));
 
-                //if(GUILayout.Button("Generate Animation"))
-                //{
-                //    //importer.GenerationAnimation();
+                if (GUILayout.Button("Generate Animation"))
+                {
+                    //importer.GenerationAnimation();
 
-                //    //AnimationClip animationClip = new AnimationClip();
-                //    //animationClip.name = name;
+                    //AnimationClip animationClip = new AnimationClip();
+                    //animationClip.name = name;
 
-                //    Debug.Log(importer.aseFile.Header.Speed);
+                    //Debug.Log(importer.aseFile.Header.Speed);
 
-                //    AssetDatabase.Refresh();
-                //}
+                }
 
                 EditorGUI.indentLevel--;
             }

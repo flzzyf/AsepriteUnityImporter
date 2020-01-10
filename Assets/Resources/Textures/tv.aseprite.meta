@@ -24,26 +24,29 @@ ScriptedImporter:
     tileOffset: {x: 0, y: 0}
     flipTexture: 0
   animationSettings:
-  - animationName: all
-    loopTime: 1
-    about: "Animation Type:\tForward\r\nAnimation:\tFrom: 0; To: 69"
-  - animationName: start
-    loopTime: 1
-    about: "Animation Type:\tForward\r\nAnimation:\tFrom: 46; To: 49"
   - animationName: 1
     loopTime: 1
-    about: "Animation Type:\tForward\r\nAnimation:\tFrom: 5; To: 14"
-  - animationName: xunhuan
-    loopTime: 1
-    about: "Animation Type:\tForward\r\nAnimation:\tFrom: 27; To: 33"
-  - animationName: end
-    loopTime: 1
-    about: "Animation Type:\tForward\r\nAnimation:\tFrom: 63; To: 69"
+    about: "Animation Type:\tForward\r\nAnimation:\tFrom: 5; To: 11"
   - animationName: 2
     loopTime: 1
-    about: "Animation Type:\tForward\r\nAnimation:\tFrom: 26; To: 38"
-  - animationName: 3
+    about: "Animation Type:\tForward\r\nAnimation:\tFrom: 16; To: 17"
+  - animationName: Start
     loopTime: 1
-    about: "Animation Type:\tForward\r\nAnimation:\tFrom: 50; To: 62"
+    about: "Animation Type:\tForward\r\nAnimation:\tFrom: 0; To: 3"
+  - animationName: 1_Start
+    loopTime: 1
+    about: "Animation Type:\tForward\r\nAnimation:\tFrom: 4; To: 4"
+  - animationName: 1_End
+    loopTime: 1
+    about: "Animation Type:\tForward\r\nAnimation:\tFrom: 12; To: 13"
+  - animationName: 2_Start
+    loopTime: 1
+    about: "Animation Type:\tForward\r\nAnimation:\tFrom: 14; To: 15"
+  - animationName: 2_End
+    loopTime: 1
+    about: "Animation Type:\tForward\r\nAnimation:\tFrom: 18; To: 22"
+  - animationName: End
+    loopTime: 1
+    about: "Animation Type:\tForward\r\nAnimation:\tFrom: 23; To: 28"
   atlas: {instanceID: 0}
   importType: 0

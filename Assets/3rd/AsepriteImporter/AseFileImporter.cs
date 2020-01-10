@@ -24,7 +24,6 @@ namespace AsepriteImporter
         [SerializeField] public Texture2D atlas;
         [SerializeField] public AseFileImportType importType;
 
-        
         public AseFile aseFile;
 
         public override void OnImportAsset(AssetImportContext ctx)
@@ -32,15 +31,14 @@ namespace AsepriteImporter
             name = GetFileName(ctx.assetPath);
 
             AseFile aseFile = ReadAseFile(ctx.assetPath);
-            int frameCount = aseFile.Header.Frames;
 
-            Debug.Log(string.Format("导入Ase动画文件：{0}，帧间隔为{1}（相当于动画帧率{2})", name, aseFile.Header.Speed, Mathf.RoundToInt(1000 / aseFile.Header.Speed)));
+            //Debug.Log(string.Format("导入Ase动画文件：{0}，帧间隔为{1}（相当于动画帧率{2})", name, aseFile.Header.Speed, Mathf.RoundToInt(1000 / aseFile.Header.Speed)));
 
             this.aseFile = aseFile;
 
             SpriteAtlasBuilder atlasBuilder = new SpriteAtlasBuilder(textureSettings, aseFile.Header.Width, aseFile.Header.Height);
 
-            Texture2D[] frames = null;
+            Texture2D[] frames;
             if (importType != AseFileImportType.LayerToSprite)
                 frames = aseFile.GetFrames();
             else
@@ -108,10 +106,22 @@ namespace AsepriteImporter
                 sprite.name = string.Format("{0}_{1}", name, spriteImportData[i].name);
 
                 ctx.AddObjectToAsset(sprite.name, sprite);
+
+                //AssetDatabase.CreateAsset(sprite, GetFolderPath(ctx.assetPath) + "/" + sprite.name + ".asset");
+                //AssetDatabase.Refresh();
+
                 sprites[i] = sprite;
             }
 
-            GenerateAnimations(ctx, aseFile, sprites);
+            //如果有Tag
+            if (aseFile.GetAnimations().Length > 0)
+            {
+                GenerateAnimations(ctx, aseFile, sprites);
+            }
+            else
+            {
+                GenerateAnimation(ctx, aseFile, sprites);
+            }
         }
 
         Texture2D SpriteToTexture(Sprite sprite)
@@ -183,6 +193,11 @@ namespace AsepriteImporter
             return filename.Substring(0, filename.LastIndexOf('.'));
         }
 
+        string GetFolderPath(string assetPath)
+        {
+            return assetPath.Substring(0, assetPath.LastIndexOf('/'));
+        }
+
         private static AseFile ReadAseFile(string assetPath)
         {
             FileStream fileStream = new FileStream(assetPath, FileMode.Open, FileAccess.Read);
@@ -192,20 +207,92 @@ namespace AsepriteImporter
             return aseFile;
         }
 
-        public void GenerationAnimation()
+        public void GenerateAnimation(AssetImportContext ctx, AseFile aseFile, Sprite[] sprites)
         {
-            Debug.Log("generate");
+            AnimationClip animationClip = new AnimationClip
+            {
+                name = name,
+                frameRate = 25
+            };
 
-            //AnimationClip animationClip = new AnimationClip();
-            //animationClip.name = name;
+            EditorCurveBinding spriteBinding = new EditorCurveBinding();
+            spriteBinding.type = typeof(SpriteRenderer);
+            spriteBinding.path = "";
+            spriteBinding.propertyName = "m_Sprite";
 
-            //AnimationClipSettings settings = AnimationUtility.GetAnimationClipSettings(animationClip);
-            //settings.loopTime = false;
-            //AnimationUtility.SetAnimationClipSettings(animationClip, settings);
+            int length = sprites.Length;
+            ObjectReferenceKeyframe[] spriteKeyFrames = new ObjectReferenceKeyframe[length + 1]; // plus last frame to keep the duration
 
+            float time = 0;
+
+            int from = 0;
+            int step = 1;
+
+            int keyIndex = from;
+
+            for (int i = 0; i < length; i++)
+            {
+                if (i >= length)
+                {
+                    keyIndex = from;
+                }
+
+
+                ObjectReferenceKeyframe frame = new ObjectReferenceKeyframe
+                {
+                    time = time,
+                    value = sprites[keyIndex]
+                };
+
+                time += aseFile.Frames[keyIndex].FrameDuration / 1000f;
+
+                keyIndex += step;
+                spriteKeyFrames[i] = frame;
+            }
+
+            float frameTime = 1f / animationClip.frameRate;
+
+            ObjectReferenceKeyframe lastFrame = new ObjectReferenceKeyframe();
+            lastFrame.time = time - frameTime;
+            lastFrame.value = sprites[keyIndex - step];
+
+            spriteKeyFrames[spriteKeyFrames.Length - 1] = lastFrame;
+
+
+            AnimationUtility.SetObjectReferenceCurve(animationClip, spriteBinding, spriteKeyFrames);
+            AnimationClipSettings settings = AnimationUtility.GetAnimationClipSettings(animationClip);
+
+            //switch (animation.Animation)
+            //{
+            //    case LoopAnimation.Forward:
+            //        animationClip.wrapMode = WrapMode.Loop;
+            //        settings.loopTime = true;
+            //        break;
+            //    case LoopAnimation.Reverse:
+            //        animationClip.wrapMode = WrapMode.Loop;
+            //        settings.loopTime = true;
+            //        break;
+            //    case LoopAnimation.PingPong:
+            //        animationClip.wrapMode = WrapMode.PingPong;
+            //        settings.loopTime = true;
+            //        break;
+            //}
+
+            //if (!importSettings.loopTime)
+            //{
+            //    animationClip.wrapMode = WrapMode.Once;
+            //    settings.loopTime = false;
+            //}
+
+            AnimationUtility.SetAnimationClipSettings(animationClip, settings);
+            ctx.AddObjectToAsset(name, animationClip);
+
+            //在同一路径创建动画文件
+            //AssetDatabase.CreateAsset(animationClip, GetFolderPath(ctx.assetPath) + "/" + name + ".anim");
+            //AssetDatabase.Refresh();
         }
 
-        private void GenerateAnimations(AssetImportContext ctx, AseFile aseFile, Sprite[] sprites)
+        public void GenerateAnimations(AssetImportContext ctx, AseFile aseFile, Sprite[] sprites)
         {
             if (animationSettings == null)
                 animationSettings = new AseFileAnimationSettings[0];
@@ -223,7 +310,19 @@ namespace AsepriteImporter
 
             foreach (var animation in animations)
             {
+                Debug.Log(animation.TagName);
+
                 AnimationClip animationClip = new AnimationClip();
+
+                //string fileName = string.Format("{0}_{1}", name, animation.TagName);
+                //string path = string.Format("{0}/{1}.anim", GetFolderPath(ctx.assetPath), fileName);
+                ////animationClip = AssetDatabase.LoadAssetAtPath(path, typeof(Animation));
+
+                //if(AssetDatabase.LoadMainAssetAtPath(path) != null)
+                //{
+                //    animationClip = AssetDatabase.LoadMainAssetAtPath(path) as AnimationClip;
+                //}
+
                 animationClip.name = name + "_" + animation.TagName;
                 animationClip.frameRate = 25;
 
@@ -254,7 +353,6 @@ namespace AsepriteImporter
                         keyIndex = from;
                     }
 
-
                     ObjectReferenceKeyframe frame = new ObjectReferenceKeyframe();
                     frame.time = time;
                     frame.value = sprites[keyIndex];
@@ -272,7 +370,6 @@ namespace AsepriteImporter
                 lastFrame.value = sprites[keyIndex - step];
 
                 spriteKeyFrames[spriteKeyFrames.Length - 1] = lastFrame;
-
 
                 AnimationUtility.SetObjectReferenceCurve(animationClip, spriteBinding, spriteKeyFrames);
                 AnimationClipSettings settings = AnimationUtility.GetAnimationClipSettings(animationClip);

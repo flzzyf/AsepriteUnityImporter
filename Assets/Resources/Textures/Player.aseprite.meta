@@ -23,6 +23,24 @@ ScriptedImporter:
     tilePadding: {x: 0, y: 0}
     tileOffset: {x: 0, y: 0}
     flipTexture: 0
-  animationSettings: []
+  animationSettings:
+  - animationName: Stand
+    loopTime: 1
+    about: "Animation Type:\tForward\r\nAnimation:\tFrom: 0; To: 14"
+  - animationName: Walk_Start
+    loopTime: 1
+    about: "Animation Type:\tForward\r\nAnimation:\tFrom: 15; To: 16"
+  - animationName: Walk
+    loopTime: 1
+    about: "Animation Type:\tForward\r\nAnimation:\tFrom: 17; To: 32"
+  - animationName: Run_Start
+    loopTime: 1
+    about: "Animation Type:\tForward\r\nAnimation:\tFrom: 33; To: 35"
+  - animationName: Run
+    loopTime: 1
+    about: "Animation Type:\tForward\r\nAnimation:\tFrom: 36; To: 50"
+  - animationName: Run_Stand_Start
+    loopTime: 1
+    about: "Animation Type:\tForward\r\nAnimation:\tFrom: 51; To: 58"
   atlas: {instanceID: 0}
   importType: 0
